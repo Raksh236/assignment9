@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>jQuery Events Practice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .box {
+        width: 400px;
+        height: 400px;
+        border: 1px solid #333;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #resizeInfo {
+        margin-top: 10px;
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+      input[type="text"],
+      input[type="email"] {
+        padding: 6px;
+        margin: 4px 0;
+      }
+      form {
+        margin-top: 10px;
+      }
+      .btnrow button {
+        margin-right: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Practice with jQuery Events</h1>
+
+    <h2>1) .click()</h2>
+    <button id="btnClick">Click Me</button>
+
+    <h2>2) .bind('click', ...)</h2>
+    <button id="btnBind">Click Me (bind)</button>
+
+    <h2>3) .on('click', ...)</h2>
+    <button id="btnOn">Click Me (on)</button>
+
+    <h2>4) One handler for two buttons via .on()</h2>
+    <div class="btnrow">
+      <button class="multi">First</button>
+      <button class="multi">Second</button>
+    </div>
+
+    <h2>5) Div with click / mouseenter / mouseleave</h2>
+    <div id="eventBox" class="box">Interact with me</div>
+
+    <h2>6) Rewrite #5 with span messages instead of alerts</h2>
+    <div id="eventBox2" class="box">Hover / Click me</div>
+    <p>Status: <span id="statusMsg">None yet</span></p>
+
+    <h2>7) Link with preventDefault + style + node name</h2>
+    <a id="toModuleMedia" href="https://modulemedia.com"
+      >Go to modulemedia.com</a
+    >
+
+    <h2>8) Show browser width/height on resize</h2>
+    <div id="resizeInfo">Resize the window to see dimensions...</div>
+
+    <h2>9) Input focus/blur background</h2>
+    <input id="focusInput" type="text" placeholder="Focus me" />
+
+    <h2>10) Simple form validation</h2>
+    <form id="contactForm" novalidate>
+      <div>
+        <label for="name">Name</label><br />
+        <input id="name" type="text" />
+      </div>
+      <div>
+        <label for="email">Email</label><br />
+        <input id="email" type="email" />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+
+    <script src="scripts/jquery-3.7.1.min.js"></script>
+    <script>
+      // 1) .click()
+      $("#btnClick").click(function () {
+        alert("Button (click) was clicked.");
+      });
+
+      // 2) .bind('click', ...)
+      $("#btnBind").bind("click", function () {
+        alert("Button (bind) was clicked.");
+      });
+
+      // 3) .on('click', ...)
+      $("#btnOn").on("click", function () {
+        alert("Button (on) was clicked.");
+      });
+
+      // 4) One handler for two buttons via .on()
+      $(".multi").on("click", function () {
+        alert("A .multi button was clicked: " + $(this).text());
+      });
+
+      // 5) Div with click / mouseenter / mouseleave
+      $("#eventBox").on({
+        click: function () {
+          alert("Div clicked");
+        },
+        mouseenter: function () {
+          alert("Mouse entered div");
+        },
+        mouseleave: function () {
+          alert("Mouse left div");
+        },
+      });
+
+      // 6) Rewrite #5 using span messages
+      function setStatus(msg) {
+        $("#statusMsg").text(msg);
+      }
+      $("#eventBox2").on({
+        click: function () {
+          setStatus("Div clicked");
+        },
+        mouseenter: function () {
+          setStatus("Mouse entered div");
+        },
+        mouseleave: function () {
+          setStatus("Mouse left div");
+        },
+      });
+
+      // 7) Link prevent default + style + node name
+      $("#toModuleMedia").on("click", function (evt) {
+        evt.preventDefault();
+        $(this).css("color", "red");
+        alert("Event target node: " + evt.target.nodeName);
+      });
+
+      // 8) Window resize dimensions
+      function updateDims() {
+        $("#resizeInfo").text(
+          "Width: " + $(window).width() + " | Height: " + $(window).height()
+        );
+      }
+      $(window).on("resize", updateDims);
+      updateDims(); // initial
+
+      // 9) Input focus/blur background
+      $("#focusInput")
+        .on("focus", function () {
+          $(this).css("background", "#eee");
+        })
+        .on("blur", function () {
+          $(this).css("background", "#fff");
+        });
+
+      // 10) Form validation
+      $("#contactForm").on("submit", function (e) {
+        e.preventDefault();
+        var ok = true;
+        var name = $("#name");
+        var email = $("#email");
+
+        if (!name.val().trim()) {
+          ok = false;
+          name.css("border", "1px solid red");
+        } else {
+          name.css("border", "1px solid green");
+        }
+
+        if (!email.val().trim()) {
+          ok = false;
+          email.css("border", "1px solid red");
+        } else {
+          email.css("border", "1px solid green");
+        }
+
+        if (!ok) {
+          alert("Both fields are required.");
+        } else {
+          alert("Thanks! Form looks good.");
+        }
+      });
+    </script>
+  </body>
+</html>
